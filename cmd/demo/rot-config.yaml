@@ -1,0 +1,19 @@
+specs:
+- project: k8s-jkns-gke-soak
+  secret: secret-1
+  type:
+    serviceAccountKey:
+      project: project-1
+      serviceAccount: service-foo
+  refreshStrategy:
+    interval: 10s
+  gracePeriod: 2s
+- project: k8s-jkns-gke-soak
+  secret: secret-2
+  type:
+    serviceAccountKey:
+      project: project-1
+      serviceAccount: service-bar
+  refreshStrategy:
+    cron: 15 9 * * 1
+  gracePeriod: 2h

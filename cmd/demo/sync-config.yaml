@@ -6,11 +6,3 @@ specs:
     namespace: ns-a
     secret: secret-a
     key: key-a
-- source: 
-    project: k8s-jkns-gke-soak
-    secret: secret-2
-  destination:
-    namespace: ns-b
-    secret: secret-b
-    key: key-b
-

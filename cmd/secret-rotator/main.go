@@ -26,7 +26,6 @@ import (
 
 type options struct {
 	configPath string
-	kubeconfig string
 }
 
 func (o *options) Validate() error {
@@ -39,7 +38,6 @@ func (o *options) Validate() error {
 func gatherOptions() options {
 	o := options{}
 	flag.StringVar(&o.configPath, "config-path", "", "Path to config.yaml.")
-	flag.StringVar(&o.kubeconfig, "kubeconfig", "", "Path to kubeconfig file.")
 	flag.Parse()
 	return o
 }
@@ -80,5 +78,7 @@ func main() {
 		Provisioners: provisioners,
 	}
 
-	rotator.RunOnce()
+	stopChan := make(chan struct{})
+	rotator.Start(stopChan)
+	// REMOVE
 }

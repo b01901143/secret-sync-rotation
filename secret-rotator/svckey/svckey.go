@@ -34,7 +34,9 @@ func (svc ServiceAccountKeySpec) Type() string {
 	return "serviceAccountKey"
 }
 
-type Provisioner struct{}
+type Provisioner struct {
+	count int
+}
 
 // TODO: add project and service-account fields to metadata when registered
 
@@ -45,7 +47,10 @@ func (p *Provisioner) CreateNew(labels map[string]string) (string, []byte, error
 	// TODO: provision new service account key
 	name := fmt.Sprintf("projects/%s/serviceAccounts/%s", labels["project"], labels["service-account"])
 	klog.V(2).Infof("Provision a new secret of %s", name)
-	return "new_key_id", []byte("new_private_key"), nil
+
+	// REMOVE
+	p.count++
+	return fmt.Sprintf("new_key_id_%d", p.count+1), []byte(fmt.Sprintf("%d", p.count+1)), nil
 }
 
 // Deactivate deletes an existing service account key specified by labels and version,

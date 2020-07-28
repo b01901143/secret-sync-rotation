@@ -36,6 +36,28 @@ type SecretRotator struct {
 	Provisioners map[string]SecretProvisioner
 }
 
+// REMOVE
+func (s *SecretRotator) Start(stopChan <-chan struct{}) error {
+	runChan := make(chan struct{})
+
+	go func() {
+		for {
+			runChan <- struct{}{}
+			time.Sleep(500 * time.Millisecond)
+		}
+	}()
+
+	for {
+		select {
+		case <-stopChan:
+			klog.V(2).Info("Stop signal received. Quitting...")
+			return nil
+		case <-runChan:
+			s.RunOnce()
+		}
+	}
+}
+
 // RunOnce checks all rotated secrets in Agent.Config().Specs
 // Pops error message for any failure in refreshing or deactivating each secret.
 func (r *SecretRotator) RunOnce() {
@@ -155,7 +177,7 @@ func (r *SecretRotator) Deactivate(rotatedSecret config.RotatedSecretSpec, now t
 
 			// TODO: disable or destroy Secret Manager secret version curVersion?
 			// 1: SecretVersion_ENABLED, 2: SecretVersion_DISABLED, 3: SecretVersion_DESTROYED
-			err = r.Client.ChangeSecretVersionState(rotatedSecret.Project, rotatedSecret.Secret, curVersion, 2)
+			err = r.Client.DisableSecretVersion(rotatedSecret.Project, rotatedSecret.Secret, curVersion)
 			if err != nil {
 				return err
 			}
