@@ -32,7 +32,7 @@ type options struct {
 	runOnce        bool
 }
 
-func (o *options) Validate() error {
+func (o *options) validate() error {
 	if o.configPath == "" {
 		return fmt.Errorf("required flag --config-path was unset")
 	}
@@ -53,7 +53,7 @@ func main() {
 	klog.InitFlags(nil)
 
 	o := gatherOptions()
-	err := o.Validate()
+	err := o.validate()
 	if err != nil {
 		klog.Errorf("Invalid options: %s", err)
 	}
